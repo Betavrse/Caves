@@ -8,10 +8,7 @@
 	</head>
 
 	<body>
-		<div id="overlay">
-			<button id="startButton">Play</button>
-		</div>
-        <div id="container"></div>
+     
 		<!-- Import maps polyfill -->
 		<!-- Remove this when import maps will be widely supported -->
 		<script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
@@ -43,11 +40,11 @@
 			const clock = new THREE.Clock();
 
 			let mixer;
-            const startButton = document.getElementById( 'startButton' );
+            
 
 
-                init();
-                animate();
+            init();
+            animate();
 
 
 
@@ -57,8 +54,6 @@
 
 
                 
-				const overlay = document.getElementById( 'overlay' );
-				overlay.remove();
 
 				const container = document.createElement( 'div' );
 				document.body.appendChild( container );
@@ -165,19 +160,6 @@
 
 
 
-            
-			function setupGui() {
-
-                //effectController = {
-                //    IsMesh: true,
-                //};
-
-                //const gui = new GUI();
-
-                //gui.add(effectController, 'IsMesh').name('display mesh').onChange(render);
-
-
-            }
 
 		</script>
 
