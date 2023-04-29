@@ -76,16 +76,16 @@
 
 				scene = new THREE.Scene();
 				scene.background = new THREE.Color( 0xa0a0a0 );
-				scene.fog = new THREE.Fog( 0xa0a0a0, 200, 800 );
+				scene.fog = new THREE.Fog( 0xa0a0a0, 300, 800 );
 
-				const hemiLight = new THREE.HemisphereLight( 0xffffff, 0x444444, 1.2 );
+				const hemiLight = new THREE.HemisphereLight( 0xa0a0a0, 0x444444, 1.2 );
 				hemiLight.position.set( 0, 200, 0 );
 				scene.add(hemiLight);
 				//
 
 				//lightProbe = new THREE.LightProbe();
 				//scene.add(lightProbe);
-				scene.add(new THREE.AmbientLight(0x404040));
+				scene.add(new THREE.AmbientLight(0x404040,5));
 				dirLight = new THREE.DirectionalLight(0xffffff,1.5);
 				dirLight.position.set(0, 500, 100);
 				dirLight.castShadow = true;
@@ -102,12 +102,12 @@
 				const mesh = new THREE.Mesh( new THREE.PlaneGeometry( 2000, 2000 ), new THREE.MeshPhongMaterial( { color: 0x999999, depthWrite: false } ) );
 				mesh.rotation.x = - Math.PI / 2;
 				mesh.receiveShadow = true;
-				scene.add( mesh );
+				//scene.add( mesh );
 
 				const grid = new THREE.GridHelper( 2000, 20, 0x000000, 0x000000 );
 				grid.material.opacity = 0.2;
 				grid.material.transparent = true;
-				scene.add(grid);
+				//scene.add(grid);
 
 				// model
 				const loader = new TDSLoader( );
@@ -119,10 +119,11 @@
 					
 					object.position.set(0, 100, 0);
 					object.scale.multiplyScalar(1); 
+					
 					object.traverse(function (object) {
 						if ((object instanceof THREE.Mesh)) {
 							mat = object.material;
-
+							object.material.metalness = 0;
 							mat.side = THREE.DoubleSide;
 							//object.material.colorWrite = false;
 						}
@@ -144,7 +145,7 @@
 				renderer.shadowMap.enabled = true;
 				renderer.physicallyCorrectLights = true;
 				renderer.gammaOutput = true;
-			    renderer.outputEncoding = THREE.sRGBEncoding;
+			    //renderer.outputEncoding = THREE.sRGBEncoding;
 				container.appendChild( renderer.domElement );
 
 				controls = new OrbitControls( camera, renderer.domElement );
