@@ -4,7 +4,7 @@
 		<title>CAVES - Pareid</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<link type="text/css" rel="stylesheet" href="main.css">
+		<link type="text/css" href="main.css">
 	</head>
 
 	<body>
@@ -33,20 +33,28 @@
             import { CinematicCamera } from 'three/addons/cameras/CinematicCamera.js';
             import { FontLoader } from 'three/addons/loaders/FontLoader.js';
             import { FirstPersonControls } from 'three/addons/controls/FirstPersonControls.js';
+			import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+			import { LightProbeGenerator } from 'three/addons/lights/LightProbeGenerator.js';
+			
 
 			let camera, scene, renderer, stats, controls;
             let bIsMesh;
 
 			const clock = new THREE.Clock();
+			var mat;
+			var model;
 
-			let mixer;
+			var geo;
+			let texture;
+			let mixer;let lightProbe;
+			let dirLight;
             
-
+            //let path = require('./models/cave/test60.fbx');
 
             init();
             animate();
 
-
+            
 
 
 			function init() {
@@ -67,22 +75,27 @@
 
 				scene = new THREE.Scene();
 				scene.background = new THREE.Color( 0xa0a0a0 );
-				scene.fog = new THREE.Fog( 0xa0a0a0, 300, 1500 );
+				scene.fog = new THREE.Fog( 0xa0a0a0, 200, 800 );
 
-				const hemiLight = new THREE.HemisphereLight( 0xffffff, 0x444444, 1.5 );
+				const hemiLight = new THREE.HemisphereLight( 0xffffff, 0x444444, 1.2 );
 				hemiLight.position.set( 0, 200, 0 );
-				scene.add( hemiLight );
+				scene.add(hemiLight);
+				//
 
-				const dirLight = new THREE.DirectionalLight( 0xffffff, 1.5 );
-				dirLight.position.set( 0, 200, 100 );
+				//lightProbe = new THREE.LightProbe();
+				//scene.add(lightProbe);
+				scene.add(new THREE.AmbientLight(0x404040));
+				dirLight = new THREE.DirectionalLight(0xffffff,1.5);
+				dirLight.position.set(0, 500, 100);
 				dirLight.castShadow = true;
 				dirLight.shadow.camera.top = 180;
 				dirLight.shadow.camera.bottom = - 100;
 				dirLight.shadow.camera.left = - 120;
 				dirLight.shadow.camera.right = 120;
+				scene.add(dirLight);
 				//scene.add( dirLight );
 
-				// scene.add( new THREE.CameraHelper( dirLight.shadow.camera ) );
+				//scene.add( new THREE.CameraHelper( dirLight.shadow.camera ) );
 
 				// ground
 				const mesh = new THREE.Mesh( new THREE.PlaneGeometry( 2000, 2000 ), new THREE.MeshPhongMaterial( { color: 0x999999, depthWrite: false } ) );
@@ -93,32 +106,48 @@
 				const grid = new THREE.GridHelper( 2000, 20, 0x000000, 0x000000 );
 				grid.material.opacity = 0.2;
 				grid.material.transparent = true;
-				scene.add( grid );
+				scene.add(grid);
 
 				// model
 				const loader = new FBXLoader();
-				loader.load( 'models/cave/test60.fbx', function ( object ) {
+				//const path = require('models/cave/test60.fbx');
+
+				loader.load('models/cave/cave00.fbx', function (object) {
+					//const model = gltf.scene;
 
 
+					//model.position.set(0, 0, 0);
+					object.scale.multiplyScalar(100); 
+					object.traverse(function (object) {
+						if ((object instanceof THREE.Mesh)) {
+							mat = object.material;
 
-                    object.traverse( function( node ) {
-                    if( node.material ) {
-                        node.material.side = THREE.DoubleSide;
-                    }
-                     });
-                     object.scale.multiplyScalar(100); 
-					scene.add( object );
+							mat.side = THREE.DoubleSide;
+							//object.material.colorWrite = false;
+						}
+					});
 
-				} );
+					//object.renderOrder = 0;
+
+					scene.add(object);
+
+				}, undefined, function (error) {
+
+					console.error(error);
+
+				}); 
 
 				renderer = new THREE.WebGLRenderer( { antialias: true } );
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				renderer.shadowMap.enabled = true;
+				renderer.physicallyCorrectLights = true;
+				renderer.gammaOutput = true;
+			    renderer.outputEncoding = THREE.sRGBEncoding;
 				container.appendChild( renderer.domElement );
 
 				controls = new OrbitControls( camera, renderer.domElement );
-				controls.target.set( 0, 100, 0 );
+				controls.target.set( 0, 0, 0 );
 				controls.update();
                 //controls = new FirstPersonControls( camera, renderer.domElement );
 				//controls.movementSpeed = 150;
