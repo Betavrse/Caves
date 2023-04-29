@@ -35,6 +35,7 @@
             import { FirstPersonControls } from 'three/addons/controls/FirstPersonControls.js';
 			import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 			import { LightProbeGenerator } from 'three/addons/lights/LightProbeGenerator.js';
+			import { TDSLoader } from 'three/addons/loaders/TDSLoader.js';
 			
 
 			let camera, scene, renderer, stats, controls;
@@ -109,15 +110,15 @@
 				scene.add(grid);
 
 				// model
-				const loader = new FBXLoader();
+				const loader = new TDSLoader( );
 				//const path = require('models/cave/test60.fbx');
-
-				loader.load('models/cave/cave00.fbx', function (object) {
+				loader.setResourcePath( 'models/cave/' );
+				loader.load('models/cave/cave00.3ds', function (object) {
 					//const model = gltf.scene;
 
-
-					//model.position.set(0, 0, 0);
-					object.scale.multiplyScalar(100); 
+					
+					object.position.set(0, 100, 0);
+					object.scale.multiplyScalar(1); 
 					object.traverse(function (object) {
 						if ((object instanceof THREE.Mesh)) {
 							mat = object.material;
