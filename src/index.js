@@ -72,8 +72,8 @@ function init() {
     // model
     const loader = new TDSLoader( );
     //const path = require('models/cave/test60.fbx');
-    loader.setResourcePath( '../models/cave/' );
-    loader.load('../models/cave/cave00.3ds', function (object) {
+    loader.setResourcePath( './models/cave/' );
+    loader.load('./models/cave/cave00.3ds', function (object) {
         //const model = gltf.scene;
 
         /*
@@ -93,7 +93,7 @@ function init() {
         scene.add(object);*/
     
  
-        const sprite = new THREE.TextureLoader().load( '../src/textures/sprites/circle.png' );
+        const sprite = new THREE.TextureLoader().load( './src/textures/sprites/circle.png' );
         //sprite.colorSpace = THREE.SRGBColorSpace;
         //object.children[0].geometry.addAttribute('alpha', new THREE.BufferAttribute(alphas,1));
         //let material = new THREE.PointsMaterial({color:0xFFFFFF, size: 0.55})
@@ -130,7 +130,7 @@ function init() {
 
     ////text
     const textloader = new FontLoader();
-    textloader.load('../src/fonts/helvetiker_regular.typeface.json', function (font) {
+    textloader.load('./src/fonts/helvetiker_regular.typeface.json', function (font) {
 
         const color = 0xffffff;
 
