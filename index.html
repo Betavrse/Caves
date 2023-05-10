@@ -9,12 +9,19 @@
 
 	<body>
 		<script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
-       
-        
-        <div class="webgl"></div>
+		<section style = "z-index:6" id="loading-screen">
+
+			<div id="loader">
+			</div>
+		
+		</section>
+		<button type="button" style="z-index:5;position: absolute; margin-left: 90%;margin-top:3%" id="PCtoggle">Point Cloud</button>
+        <button type="button" style="z-index:5;position: absolute; margin-left: 90%; margin-top:7%" id="WFtoggle">Wireframe</button>
+		<button type="button" style="z-index:5;position: absolute; margin-left: 90%; margin-top:11%" id="SCtoggle">Scan</button>
+		<div class="webgl"></div>
 		<div class="container"></div>
-		<button id="Toggle" class="button" onclick="" >Toggle</button>
-		<span></span>
+		
+		
 	</div>
 		<script type="importmap">
 			{

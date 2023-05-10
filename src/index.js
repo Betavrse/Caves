@@ -8,6 +8,9 @@ let camera, scene, renderer;
 let lightProbe;
 let dirLight;
 var scrollY = 0;
+var PCobjHidden = false;
+var WFobjHidden = false;
+var SCobjHidden = true;
 let cameraPosition;
 var percentage = 0;
 var startTime	= Date.now();
@@ -34,17 +37,17 @@ camera.position.set(0, 0, 0);
 cameraPosition = camera.position.z;
 
 scene.background = new THREE.Color(0x000000);
-scene.fog = new THREE.Fog(0x000000, 500, 1000);
+scene.fog = new THREE.Fog(0x3d3d3d, 400, 1000);
 
-const hemiLight = new THREE.HemisphereLight(0xa0a0a0, 0x444444, 1.2);
+const hemiLight = new THREE.HemisphereLight(0xa0a0a0, 0x444444, 1);
 hemiLight.position.set(0, 200, 0);
 scene.add(hemiLight);
 //
 
 lightProbe = new THREE.LightProbe();
 scene.add(lightProbe);
-scene.add(new THREE.AmbientLight(0x404040, 5));
-dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
+scene.add(new THREE.AmbientLight(0x404040, 1));
+dirLight = new THREE.DirectionalLight(0xffffff, 1);
 dirLight.position.set(0, 500, 100);
 dirLight.castShadow = true;
 dirLight.shadow.camera.top = 180;
@@ -64,7 +67,7 @@ var span = document.querySelector('span');
 
 function initThree () {
     renderer.setPixelRatio(window.devicePixelRatio || 1);
-    renderer.setClearColor(0x161216)
+    //renderer.setClearColor(0x161216)
 
     resize()
     const layers = {
@@ -81,28 +84,34 @@ function initThree () {
         }
 
     }
-    const gui = new GUI();
-    gui.add( layers, 'PointCloud' );
-    gui.add( layers, 'Scan' );
+
     
     container.appendChild(renderer.domElement);
   }
 
 
 
-
+  const loadingManager = new THREE.LoadingManager( () => {
+	
+    const loadingScreen = document.getElementById( 'loading-screen' );
+    loadingScreen.classList.add( 'fade-out' );
+    
+    // optional: remove loader from DOM via event listener
+    loadingScreen.addEventListener( 'transitionend', onTransitionEnd );
+    
+} );
 
 
 ////// 
 //model
 ///////
-const loader = new TDSLoader();
+const loader = new TDSLoader(loadingManager);
 loader.setResourcePath('./models/cave/');
 loader.load('./models/cave/cave00.3ds', function (object) {
     //object.position.z = -1200;
     const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
     let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
-    const lineMat = new THREE.LineBasicMaterial({ color: 0x3d3d3d, vertexColors: false, linewidth: 5 });
+    const lineMat = new THREE.LineBasicMaterial({ color: 0x3d3d3d, vertexColors: false, linewidth: 0.1 });
     console.debug(object.children.length);
 
     const geometries = [];
@@ -116,9 +125,62 @@ loader.load('./models/cave/cave00.3ds', function (object) {
     var linesMesh = new THREE.LineSegments(mergedGeo, lineMat);
     mesh.position.z=-1200; 
     linesMesh.position.z=-1200;
+    object.position.z = -1200;
     scene.add(mesh)
     scene.add(linesMesh);
-});
+    scene.add(object);
+
+    mesh.visible = true;
+    linesMesh.visible = true;
+    object.visible = false;
+
+    document.getElementById("PCtoggle").addEventListener("click", function(){
+        if(PCobjHidden) {
+            PCobjHidden = false;
+            // code to show object
+
+            mesh.visible = true;
+        } else {
+            PCobjHidden = true;
+            // code to hide object
+            
+            mesh.visible = false;
+        }
+
+
+    });
+    document.getElementById("WFtoggle").addEventListener("click", function(){
+        if(WFobjHidden) {
+            WFobjHidden = false;
+            // code to show object
+
+            linesMesh.visible = true;
+        } else {
+            WFobjHidden = true;
+            // code to hide object
+            
+            linesMesh.visible = false;
+        }
+
+
+    });
+    document.getElementById("SCtoggle").addEventListener("click", function(){
+        if(SCobjHidden) {
+            SCobjHidden = false;
+            // code to show object
+
+            object.visible = true;
+        } else {
+            SCobjHidden = true;
+            // code to hide object
+            
+            object.visible = false;
+        }
+
+
+    });
+}
+);
 
 
 /////////
@@ -143,7 +205,7 @@ textloader.load('./src/fonts/helvetiker_regular.typeface.json', function (font) 
 
     const message = '   CAVES\nPareid';
 
-    const shapes = font.generateShapes(message, 80);
+    const shapes = font.generateShapes(message, 40);
 
     const geometry = new THREE.ShapeGeometry(shapes);
 
@@ -238,8 +300,7 @@ function lerp(a, b, t) {
 
 function init () {
     initThree()
-    window.addEventListener('resize', resize, { passive: true
-    })
+    window.addEventListener('resize', resize, { passive: true})
     divContainer.addEventListener('wheel', onWheel, { passive: false });
     
     
@@ -305,17 +366,26 @@ function scroll (e) {
 
 //mobile example
 function onTouchStart (e) {
+    e.preventDefault();
     var t = (e.targetTouches) ? e.targetTouches[0] : e;
     touchStartY = t.pageY;
 };
 
 function onTouchMove (e) {
+    e.preventDefault();
     var evt = _event;
     var t = (e.targetTouches) ? e.targetTouches[0] : e;
     evt.deltaY = (t.pageY - touchStartY) * 5;
     touchStartY = t.pageY;
 
-		scroll(e)
+	scroll(e)
 };
 
 init();
+
+
+function onTransitionEnd( event ) {
+
+	event.target.remove();
+	
+}
