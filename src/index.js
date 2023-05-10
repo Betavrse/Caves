@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 import { TDSLoader } from 'three/addons/loaders/TDSLoader.js';
 import * as BufferGeometryUtils from '../jsm/utils/BufferGeometryUtils.js';
+import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 
 let camera, scene, renderer;
 let lightProbe;
@@ -66,6 +67,24 @@ function initThree () {
     renderer.setClearColor(0x161216)
 
     resize()
+    const layers = {
+
+        'PointCloud': function () {
+
+            camera.layers.toggle( 0 );
+
+        },
+        'Scan': function () {
+
+            camera.layers.toggle( 1);
+
+        }
+
+    }
+    const gui = new GUI();
+    gui.add( layers, 'PointCloud' );
+    gui.add( layers, 'Scan' );
+    
     container.appendChild(renderer.domElement);
   }
 
@@ -222,10 +241,10 @@ function init () {
     window.addEventListener('resize', resize, { passive: true
     })
     divContainer.addEventListener('wheel', onWheel, { passive: false });
-    /*
-    mobile example
+    
+    
     divContainer.addEventListener('touchstart', onTouchStart, { passive: false });
-    divContainer.addEventListener('touchmove', onTouchMove, { passive: false });*/
+    divContainer.addEventListener('touchmove', onTouchMove, { passive: false });
     animate()
   }
 
@@ -281,5 +300,22 @@ function scroll (e) {
   camera.position.z = -(scrollY/10);
   console.debug(scrollY)
 }
+
+
+
+//mobile example
+function onTouchStart (e) {
+    var t = (e.targetTouches) ? e.targetTouches[0] : e;
+    touchStartY = t.pageY;
+};
+
+function onTouchMove (e) {
+    var evt = _event;
+    var t = (e.targetTouches) ? e.targetTouches[0] : e;
+    evt.deltaY = (t.pageY - touchStartY) * 5;
+    touchStartY = t.pageY;
+
+		scroll(e)
+};
 
 init();
