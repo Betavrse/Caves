@@ -14,6 +14,7 @@ var SCobjHidden = true;
 let cameraPosition;
 var percentage = 0;
 var startTime	= Date.now();
+var touchStartY = 0;
 var _event = {
     y: 0,
     deltaY: 0
@@ -301,11 +302,11 @@ function lerp(a, b, t) {
 function init () {
     initThree()
     window.addEventListener('resize', resize, { passive: true})
-    divContainer.addEventListener('wheel', onWheel, { passive: true });
+    divContainer.addEventListener('wheel', onWheel, { passive: false });
     
     
-    divContainer.addEventListener('touchstart', onTouchStart, { passive: true });
-    divContainer.addEventListener('touchmove', onTouchMove, { passive: true });
+    divContainer.addEventListener('touchstart', onTouchStart, { passive: false });
+    divContainer.addEventListener('touchmove', onTouchMove, { passive: false });
     animate()
   }
 
