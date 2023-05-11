@@ -301,11 +301,11 @@ function lerp(a, b, t) {
 function init () {
     initThree()
     window.addEventListener('resize', resize, { passive: true})
-    divContainer.addEventListener('wheel', onWheel, { passive: false });
+    divContainer.addEventListener('wheel', onWheel, { passive: true });
     
     
-    divContainer.addEventListener('touchstart', onTouchStart, { passive: false });
-    divContainer.addEventListener('touchmove', onTouchMove, { passive: false });
+    divContainer.addEventListener('touchstart', onTouchStart, { passive: true });
+    divContainer.addEventListener('touchmove', onTouchMove, { passive: true });
     animate()
   }
 
