@@ -218,7 +218,7 @@ textloader.load('./src/fonts/helvetiker_regular.typeface.json', function (font) 
     // make shape ( N.B. edge view not visible )
 
     const text = new THREE.Mesh(geometry, matLite);
-    text.position.z = -1200;
+    text.position.z = -1000;
     scene.add(text);
 
     // make line shape ( N.B. edge view remains visible )
@@ -272,7 +272,7 @@ textloader.load('./src/fonts/helvetiker_regular.typeface.json', function (font) 
  * Particles
  */
 // Geometry
-const particlesCount = 50000
+const particlesCount = 60000
 const positions = new Float32Array(particlesCount * 3)
 
 
@@ -333,9 +333,9 @@ function resize () {
 
   function onWheel (e) {
     // for embedded demo
-    e.stopImmediatePropagation();
-    e.preventDefault();
-    e.stopPropagation();
+    //e.stopImmediatePropagation();
+    //e.preventDefault();
+    //e.stopPropagation();
 
     var evt = _event;
     evt.deltaY = e.wheelDeltaY || e.deltaY * -1;
@@ -366,13 +366,13 @@ function scroll (e) {
 
 //mobile example
 function onTouchStart (e) {
-    e.preventDefault();
+    //e.preventDefault();
     var t = (e.targetTouches) ? e.targetTouches[0] : e;
     touchStartY = t.pageY;
 };
 
 function onTouchMove (e) {
-    e.preventDefault();
+    //e.preventDefault();
     var evt = _event;
     var t = (e.targetTouches) ? e.targetTouches[0] : e;
     evt.deltaY = (t.pageY - touchStartY) * 5;
