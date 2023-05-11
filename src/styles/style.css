@@ -1,6 +1,6 @@
 html, body {
     position: fixed;
-    
+    overscroll-behavior-y: contain;
     top: 0;
     left: 0;
     right: 0;
