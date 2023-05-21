@@ -1,8 +1,11 @@
 import * as THREE from 'three';
 import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 import { TDSLoader } from 'three/addons/loaders/TDSLoader.js';
-import * as BufferGeometryUtils from '../jsm/utils/BufferGeometryUtils.js';
+import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+import { Scene, PerspectiveCamera } from 'three'
+import { ScrollControls } from 'three-story-controls'
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 let camera, scene, renderer;
 let lightProbe;
@@ -13,12 +16,12 @@ var WFobjHidden = false;
 var SCobjHidden = true;
 let cameraPosition;
 var percentage = 0;
-var startTime	= Date.now();
+var startTime = Date.now();
 var touchStartY = 0;
 var _event = {
     y: 0,
     deltaY: 0
-  };
+};
 
 
 
@@ -66,7 +69,7 @@ var divContainer = document.querySelector('.container')
 var maxHeight = (divContainer.clientHeight || divContainer.offsetHeight) - window.innerHeight
 var span = document.querySelector('span');
 
-function initThree () {
+function initThree() {
     renderer.setPixelRatio(window.devicePixelRatio || 1);
     //renderer.setClearColor(0x161216)
 
@@ -75,32 +78,32 @@ function initThree () {
 
         'PointCloud': function () {
 
-            camera.layers.toggle( 0 );
+            camera.layers.toggle(0);
 
         },
         'Scan': function () {
 
-            camera.layers.toggle( 1);
+            camera.layers.toggle(1);
 
         }
 
     }
 
-    
+
     container.appendChild(renderer.domElement);
-  }
+}
 
 
 
-  const loadingManager = new THREE.LoadingManager( () => {
-	
-    const loadingScreen = document.getElementById( 'loading-screen' );
-    loadingScreen.classList.add( 'fade-out' );
-    
+const loadingManager = new THREE.LoadingManager(() => {
+
+    const loadingScreen = document.getElementById('loading-screen');
+    loadingScreen.classList.add('fade-out');
+
     // optional: remove loader from DOM via event listener
-    loadingScreen.addEventListener( 'transitionend', onTransitionEnd );
-    
-} );
+    loadingScreen.addEventListener('transitionend', onTransitionEnd);
+
+});
 
 
 ////// 
@@ -108,7 +111,7 @@ function initThree () {
 ///////
 const loader = new TDSLoader(loadingManager);
 loader.setResourcePath('./models/cave/');
-loader.load('./models/cave/cave00.3ds', function (object) {
+loader.load('./models/cave/cave01.3ds', function (object) {
     //object.position.z = -1200;
     const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
     let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
@@ -121,11 +124,11 @@ loader.load('./models/cave/cave00.3ds', function (object) {
     }
 
     const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
-    
+
     var mesh = new THREE.Points(mergedGeo, material);
     var linesMesh = new THREE.LineSegments(mergedGeo, lineMat);
-    mesh.position.z=-1200; 
-    linesMesh.position.z=-1200;
+    mesh.position.z = -1200;
+    linesMesh.position.z = -1200;
     object.position.z = -1200;
     scene.add(mesh)
     scene.add(linesMesh);
@@ -135,8 +138,8 @@ loader.load('./models/cave/cave00.3ds', function (object) {
     linesMesh.visible = true;
     object.visible = false;
 
-    document.getElementById("PCtoggle").addEventListener("click", function(){
-        if(PCobjHidden) {
+    document.getElementById("PCtoggle").addEventListener("click", function () {
+        if (PCobjHidden) {
             PCobjHidden = false;
             // code to show object
 
@@ -144,14 +147,14 @@ loader.load('./models/cave/cave00.3ds', function (object) {
         } else {
             PCobjHidden = true;
             // code to hide object
-            
+
             mesh.visible = false;
         }
 
 
     });
-    document.getElementById("WFtoggle").addEventListener("click", function(){
-        if(WFobjHidden) {
+    document.getElementById("WFtoggle").addEventListener("click", function () {
+        if (WFobjHidden) {
             WFobjHidden = false;
             // code to show object
 
@@ -159,14 +162,14 @@ loader.load('./models/cave/cave00.3ds', function (object) {
         } else {
             WFobjHidden = true;
             // code to hide object
-            
+
             linesMesh.visible = false;
         }
 
 
     });
-    document.getElementById("SCtoggle").addEventListener("click", function(){
-        if(SCobjHidden) {
+    document.getElementById("SCtoggle").addEventListener("click", function () {
+        if (SCobjHidden) {
             SCobjHidden = false;
             // code to show object
 
@@ -174,7 +177,7 @@ loader.load('./models/cave/cave00.3ds', function (object) {
         } else {
             SCobjHidden = true;
             // code to hide object
-            
+
             object.visible = false;
         }
 
@@ -268,11 +271,14 @@ textloader.load('./src/fonts/helvetiker_regular.typeface.json', function (font) 
 }); //end load function
 
 
-
+const controls = new OrbitControls( camera, renderer.domElement );
+camera.position.set( 0, 20, 100 );
+controls.update();
 /**
  * Particles
  */
 // Geometry
+/*
 const particlesCount = 60000
 const positions = new Float32Array(particlesCount * 3)
 
@@ -293,22 +299,22 @@ const particlesMaterial = new THREE.PointsMaterial({
 })
 // Points
 const particles = new THREE.Points(particlesGeometry, particlesMaterial)
-scene.add(particles)
+scene.add(particles)*/
 
 function lerp(a, b, t) {
     return ((1 - t) * a + t * b);
-  }
+}
 
-function init () {
+function init() {
     initThree()
-    window.addEventListener('resize', resize, { passive: true})
+    window.addEventListener('resize', resize, { passive: true })
     divContainer.addEventListener('wheel', onWheel, { passive: false });
     divContainer.addEventListener('touchstart', onTouchStart, { passive: false });
     divContainer.addEventListener('touchmove', onTouchMove, { passive: false });
     animate()
-  }
+}
 
-function resize () {
+function resize() {
     // cointainer height - window height to limit the scroll at the top of the screen when we are at the bottom of the container
     maxHeight = (divContainer.clientHeight || divContainer.offsetHeight) - window.innerHeight
     renderer.width = container.clientWidth;
@@ -316,21 +322,22 @@ function resize () {
     renderer.setSize(renderer.width, renderer.height);
     camera.aspect = renderer.width / renderer.height;
     camera.updateProjectionMatrix();
-  }
-  function animate() {
+}
+function animate() {
     // render the 3D scene
     render();
+    controls.update();
     // relaunch the 'timer' 
-    requestAnimationFrame( animate );
-  }
+    requestAnimationFrame(animate);
+}
 
-  function render() {
-    var dtime	= Date.now() - startTime;
+function render() {
+    var dtime = Date.now() - startTime;
 
-    renderer.render( scene, camera );
-  }
+    renderer.render(scene, camera);
+}
 
-  function onWheel (e) {
+function onWheel(e) {
     // for embedded demo
     //e.stopImmediatePropagation();
     //e.preventDefault();
@@ -344,47 +351,47 @@ function resize () {
     scroll(e);
 };
 
-function scroll (e) {
-  var evt = _event;
-  // limit scroll top
-  if ((evt.y + evt.deltaY) > 0 ) {
-    evt.y = 0;
-  // limit scroll bottom
-  } else if ((-(evt.y + evt.deltaY)) >= maxHeight) {
-    evt.y = -maxHeight;
-  } else {
-      evt.y += evt.deltaY;
-  }
-  scrollY = -evt.y
-  var camPos = camera.position.z;
-  camera.position.z = -(scrollY/10);
-  console.debug(scrollY)
+function scroll(e) {
+    var evt = _event;
+    // limit scroll top
+    if ((evt.y + evt.deltaY) > 0) {
+        evt.y = 0;
+        // limit scroll bottom
+    } else if ((-(evt.y + evt.deltaY)) >= maxHeight) {
+        evt.y = -maxHeight;
+    } else {
+        evt.y += evt.deltaY;
+    }
+    scrollY = -evt.y
+    var camPos = camera.position.z;
+    camera.position.z = -(scrollY / 10);
+    console.debug(scrollY)
 }
 
 
 
 //mobile example
-function onTouchStart (e) {
+function onTouchStart(e) {
     //e.preventDefault();
     var t = (e.targetTouches) ? e.targetTouches[0] : e;
     touchStartY = t.pageY;
 };
 
-function onTouchMove (e) {
+function onTouchMove(e) {
     //e.preventDefault();
     var evt = _event;
     var t = (e.targetTouches) ? e.targetTouches[0] : e;
     evt.deltaY = (t.pageY - touchStartY) * 5;
     touchStartY = t.pageY;
 
-	scroll(e)
+    scroll(e)
 };
 
 init();
 
 
-function onTransitionEnd( event ) {
+function onTransitionEnd(event) {
 
-	event.target.remove();
-	
+    event.target.remove();
+
 }
