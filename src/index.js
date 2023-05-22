@@ -7,7 +7,7 @@ import { Scene, PerspectiveCamera } from 'three'
 import { ScrollControls } from 'three-story-controls'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-let camera, scene, renderer;
+let camera, scene, renderer,raycaster;
 let lightProbe;
 let dirLight;
 var scrollY = 0;
@@ -15,34 +15,75 @@ var PCobjHidden = false;
 var WFobjHidden = false;
 var SCobjHidden = true;
 let cameraPosition;
-var percentage = 0;
-var startTime = Date.now();
+let INTERSECTED;
+let theta = 0;
+
+const pointer = new THREE.Vector2();
+const radius = 100;
+const frustumSize = 400;
 var touchStartY = 0;
 var _event = {
     y: 0,
     deltaY: 0
 };
+const sizes = {
+    width: window.innerWidth,
+    height: window.innerHeight
+}
 
+const newmaterial = new THREE.MeshPhysicalMaterial({
+    reflectivity: 1,
+    color: 0x131313,
+    roughness: 0.435,   
+    thickness:10,
+    clearcoat: 0.72,
+    clearcoatRoughness: 1
 
+    
+   
+  });
 
+const aspect = window.innerWidth / window.innerHeight;
 var container = document.querySelector('.webgl');
-var divContainer = document.querySelector('.container')
-var maxHeight = (divContainer.clientHeight || divContainer.offsetHeight) - window.innerHeight
-var span = document.querySelector('span');
 
 scene = new THREE.Scene();
+raycaster = new THREE.Raycaster();
+
 renderer = new THREE.WebGLRenderer({
     antialias: true,
     alpha: true
 });
 
+renderer.setSize(sizes.width, sizes.height)
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+renderer.shadowMap.enabled = true;
+renderer.physicallyCorrectLights = true;
+renderer.colorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping ; 
+renderer.toneMappingExposure = 3;
+
+
 camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 2000);
-camera.position.set(0, 0, 0);
-cameraPosition = camera.position.z;
+//camera = new THREE.OrthographicCamera( frustumSize * aspect / - 2, frustumSize * aspect / 2, frustumSize / 2, frustumSize / - 2, 1, 1000 );
+camera.position.set( 0, 100, 300 );
+//camera.LookAt(0,0,0);
 
-scene.background = new THREE.Color(0x000000);
-scene.fog = new THREE.Fog(0x3d3d3d, 400, 1000);
+const axesHelper = new THREE.AxesHelper( 5 );
+scene.add( axesHelper );
+const controls = new OrbitControls( camera, renderer.domElement );
 
+controls.enableDamping = true;
+controls.screenSpacePanning = false;
+ // an animation loop is required when either damping or auto-rotation are enabled
+controls.dampingFactor = 0.05;
+controls.minDistance = 300;
+controls.maxDistance = 500;
+controls.maxPolarAngle = Math.PI / 2;
+controls.target.set(0, 0, 0);
+
+scene.background = new THREE.Color(0xcccccc);
+scene.fog = new THREE.Fog(0xcccccc, 200, 500);
+//scene.fog = new THREE.FogExp2( 0xcccccc, 1000 );
 const hemiLight = new THREE.HemisphereLight(0xa0a0a0, 0x444444, 1);
 hemiLight.position.set(0, 200, 0);
 scene.add(hemiLight);
@@ -51,7 +92,7 @@ scene.add(hemiLight);
 lightProbe = new THREE.LightProbe();
 scene.add(lightProbe);
 scene.add(new THREE.AmbientLight(0x404040, 1));
-dirLight = new THREE.DirectionalLight(0xffffff, 1);
+dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
 dirLight.position.set(0, 500, 100);
 dirLight.castShadow = true;
 dirLight.shadow.camera.top = 180;
@@ -60,20 +101,17 @@ dirLight.shadow.camera.left = - 120;
 dirLight.shadow.camera.right = 120;
 scene.add(dirLight);
 
-const cameraGroup = new THREE.Group();
-scene.add(cameraGroup);
-cameraGroup.add(camera);
 
+var parent = new THREE.Group();
+scene.add( parent );
 
-var divContainer = document.querySelector('.container')
-var maxHeight = (divContainer.clientHeight || divContainer.offsetHeight) - window.innerHeight
-var span = document.querySelector('span');
+var maxHeight = (container.clientHeight || container.offsetHeight) - window.innerHeight
 
 function initThree() {
     renderer.setPixelRatio(window.devicePixelRatio || 1);
     //renderer.setClearColor(0x161216)
 
-    resize()
+    
     const layers = {
 
         'PointCloud': function () {
@@ -88,13 +126,17 @@ function initThree() {
         }
 
     }
-
-
     container.appendChild(renderer.domElement);
+    document.addEventListener( 'mousemove', onPointerMove );
+
+
 }
+function onPointerMove( event ) {
 
+    pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
-
+}
 const loadingManager = new THREE.LoadingManager(() => {
 
     const loadingScreen = document.getElementById('loading-screen');
@@ -104,7 +146,11 @@ const loadingManager = new THREE.LoadingManager(() => {
     loadingScreen.addEventListener('transitionend', onTransitionEnd);
 
 });
+const size = 1000;
+const divisions = 20;
 
+const gridHelper = new THREE.GridHelper( size, divisions );
+scene.add( gridHelper );
 
 ////// 
 //model
@@ -113,10 +159,9 @@ const loader = new TDSLoader(loadingManager);
 loader.setResourcePath('./models/cave/');
 loader.load('./models/cave/cave01.3ds', function (object) {
     //object.position.z = -1200;
+    
     const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
     let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
-    const lineMat = new THREE.LineBasicMaterial({ color: 0x3d3d3d, vertexColors: false, linewidth: 0.1 });
-    console.debug(object.children.length);
 
     const geometries = [];
     for (var i = 0; i < object.children.length; i++) {
@@ -126,18 +171,16 @@ loader.load('./models/cave/cave01.3ds', function (object) {
     const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
 
     var mesh = new THREE.Points(mergedGeo, material);
-    var linesMesh = new THREE.LineSegments(mergedGeo, lineMat);
-    mesh.position.z = -1200;
-    linesMesh.position.z = -1200;
-    object.position.z = -1200;
-    scene.add(mesh)
-    scene.add(linesMesh);
-    scene.add(object);
 
-    mesh.visible = true;
-    linesMesh.visible = true;
-    object.visible = false;
-
+    object.scale.set(0.1,0.1,0.1);
+    mesh.position.z = 0;
+    object.position.set(-100,30,100);
+    //scene.add(mesh)
+    //scene.add(object);
+    parent.add(object);
+    mesh.visible = false;
+    object.visible = true;
+/*
     document.getElementById("PCtoggle").addEventListener("click", function () {
         if (PCobjHidden) {
             PCobjHidden = false;
@@ -182,14 +225,87 @@ loader.load('./models/cave/cave01.3ds', function (object) {
         }
 
 
-    });
+    });*/
 }
 );
 
 
+
+loader.load('./models/cave/cave02.3ds', function (object) {
+
+    const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
+    let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
+
+    const geometries = [];
+    for (var i = 0; i < object.children.length; i++) {
+        geometries.push(object.children[i].geometry);
+    }
+
+    const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
+
+    var mesh = new THREE.Points(mergedGeo, material);
+
+    object.scale.set(0.1,0.1,0.1);
+    mesh.position.z = 0;
+    object.position.set(-100,30,-100);
+    //scene.add(mesh)
+    //scene.add(object);
+    parent.add(object);
+    mesh.visible = false;
+    object.visible = true;
+});
+
+loader.load('./models/cave/cave00.3ds', function (object) {
+
+    const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
+    let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
+
+    const geometries = [];
+    for (var i = 0; i < object.children.length; i++) {
+        geometries.push(object.children[i].geometry);
+    }
+
+    const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
+
+    var mesh = new THREE.Points(mergedGeo, material);
+
+    object.scale.set(0.1,0.1,0.1);
+    mesh.position.z = 0;
+    object.position.set(100,30,-100);
+    object.rotation.set(90,0,90);
+    //scene.add(mesh)
+   //scene.add(object);
+    parent.add(object);
+    mesh.visible = false;
+    object.visible = true;
+});
+loader.load('./models/cave/cave05.3ds', function (object) {
+
+    const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
+    let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
+
+    const geometries = [];
+    for (var i = 0; i < object.children.length; i++) {
+        geometries.push(object.children[i].geometry);
+    }
+
+    const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
+
+    var mesh = new THREE.Points(mergedGeo, material);
+
+    object.scale.set(0.1,0.1,0.1);
+    mesh.position.z = 0;
+    object.position.set(100,30,100);
+    //scene.add(mesh)
+    //scene.add(object);
+    parent.add(object);
+    mesh.visible = false;
+    object.visible = true;
+});
 /////////
 /////text
 /////////
+
 const textloader = new FontLoader();
 textloader.load('./src/fonts/helvetiker_regular.typeface.json', function (font) {
 
@@ -217,12 +333,12 @@ textloader.load('./src/fonts/helvetiker_regular.typeface.json', function (font) 
 
     const xMid = - 0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
 
-    geometry.translate(xMid, 0, 500);
+    geometry.translate(xMid, 50, 0);
 
     // make shape ( N.B. edge view not visible )
 
     const text = new THREE.Mesh(geometry, matLite);
-    text.position.z = -1000;
+    text.position.z = 0;
     scene.add(text);
 
     // make line shape ( N.B. edge view remains visible )
@@ -257,13 +373,13 @@ textloader.load('./src/fonts/helvetiker_regular.typeface.json', function (font) 
         const points = shape.getPoints();
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
 
-        geometry.translate(xMid, 0, 350);
+        geometry.translate(xMid, 50, 0);
 
         const lineMesh = new THREE.Line(geometry, matDark);
         lineText.add(lineMesh);
 
     }
-    lineText.position.z = -1200;
+    lineText.position.z = 0;
     scene.add(lineText);
 
 
@@ -271,9 +387,7 @@ textloader.load('./src/fonts/helvetiker_regular.typeface.json', function (font) 
 }); //end load function
 
 
-const controls = new OrbitControls( camera, renderer.domElement );
-camera.position.set( 0, 20, 100 );
-controls.update();
+
 /**
  * Particles
  */
@@ -307,34 +421,65 @@ function lerp(a, b, t) {
 
 function init() {
     initThree()
-    window.addEventListener('resize', resize, { passive: true })
-    divContainer.addEventListener('wheel', onWheel, { passive: false });
-    divContainer.addEventListener('touchstart', onTouchStart, { passive: false });
-    divContainer.addEventListener('touchmove', onTouchMove, { passive: false });
+    //window.addEventListener('resize', resize, { passive: true })
+    //divContainer.addEventListener('wheel', onWheel, { passive: false });
+    //divContainer.addEventListener('touchstart', onTouchStart, { passive: false });
+    //divContainer.addEventListener('touchmove', onTouchMove, { passive: false });
     animate()
 }
 
-function resize() {
-    // cointainer height - window height to limit the scroll at the top of the screen when we are at the bottom of the container
-    maxHeight = (divContainer.clientHeight || divContainer.offsetHeight) - window.innerHeight
-    renderer.width = container.clientWidth;
-    renderer.height = container.clientHeight;
-    renderer.setSize(renderer.width, renderer.height);
-    camera.aspect = renderer.width / renderer.height;
-    camera.updateProjectionMatrix();
-}
+window.addEventListener('resize', () =>
+{
+    // Update sizes
+    sizes.width = window.innerWidth
+    sizes.height = window.innerHeight
+
+    // Update camera
+    camera.aspect = sizes.width / sizes.height
+    camera.updateProjectionMatrix()
+
+    // Update renderer
+    renderer.setSize(sizes.width, sizes.height)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+})
+
 function animate() {
     // render the 3D scene
-    render();
+    requestAnimationFrame(animate);
     controls.update();
     // relaunch the 'timer' 
-    requestAnimationFrame(animate);
+    render();
+
 }
 
 function render() {
-    var dtime = Date.now() - startTime;
+    //var dtime = Date.now() - startTime;
+	var time = Date.now() * 0.0005;
+    parent.rotation.y+=0.0004;
+    raycaster.setFromCamera( pointer, camera );
+    const intersects = raycaster.intersectObjects( scene.children, false );
+    if ( intersects.length > 0 ) {
+
+        if ( INTERSECTED != intersects[ 0 ].object ) {
+
+            if ( INTERSECTED ) INTERSECTED.material;
+
+            INTERSECTED = intersects[ 0 ].object;
+            
+            INTERSECTED.material = newmaterial;
+
+        }
+
+    } else {
+
+        if ( INTERSECTED ) INTERSECTED.material;
+
+        INTERSECTED = null;
+
+    }
 
     renderer.render(scene, camera);
+    
 }
 
 function onWheel(e) {
