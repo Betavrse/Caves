@@ -76,13 +76,13 @@ controls.enableDamping = true;
 controls.screenSpacePanning = false;
  // an animation loop is required when either damping or auto-rotation are enabled
 controls.dampingFactor = 0.05;
-controls.minDistance = 300;
-controls.maxDistance = 500;
+//controls.minDistance = 300;
+//controls.maxDistance = 500;
 controls.maxPolarAngle = Math.PI / 2;
 controls.target.set(0, 0, 0);
 
-scene.background = new THREE.Color(0xcccccc);
-scene.fog = new THREE.Fog(0xcccccc, 200, 500);
+scene.background = new THREE.Color(0xff0000);
+scene.fog = new THREE.Fog(0x00ff0d, 200, 500);
 //scene.fog = new THREE.FogExp2( 0xcccccc, 1000 );
 const hemiLight = new THREE.HemisphereLight(0xa0a0a0, 0x444444, 1);
 hemiLight.position.set(0, 200, 0);
@@ -92,7 +92,7 @@ scene.add(hemiLight);
 lightProbe = new THREE.LightProbe();
 scene.add(lightProbe);
 scene.add(new THREE.AmbientLight(0x404040, 1));
-dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
+dirLight = new THREE.DirectionalLight(0xffffff, 0.3);
 dirLight.position.set(0, 500, 100);
 dirLight.castShadow = true;
 dirLight.shadow.camera.top = 180;
@@ -178,7 +178,7 @@ loader.load('./models/cave/cave01.3ds', function (object) {
     //scene.add(mesh)
     //scene.add(object);
     parent.add(object);
-    mesh.visible = false;
+    mesh.visible = true;
     object.visible = true;
 /*
     document.getElementById("PCtoggle").addEventListener("click", function () {
