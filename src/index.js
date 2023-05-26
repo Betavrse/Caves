@@ -110,7 +110,7 @@ function initThree() {
     renderer.setPixelRatio(window.devicePixelRatio || 1);
     //renderer.setClearColor(0x161216)
 
-    
+
     const layers = {
 
         'PointCloud': function () {
@@ -128,6 +128,8 @@ function initThree() {
     container.appendChild(renderer.domElement);
     document.addEventListener( 'mousemove', onPointerMove );
 
+    loadfirst();
+    loadsecond();
 
 }
 function onPointerMove( event ) {
@@ -147,160 +149,171 @@ const loadingManager = new THREE.LoadingManager(() => {
 });
 const size = 1000;
 const divisions = 20;
-
+const loader = new TDSLoader(loadingManager);
+loader.setResourcePath('./models/cave/');
 const gridHelper = new THREE.GridHelper( size, divisions );
 scene.add( gridHelper );
 
 ////// 
 //model
 ///////
-const loader = new TDSLoader(loadingManager);
-loader.setResourcePath('./models/cave/');
-loader.load('./models/cave/cave01.3ds', function (object) {
-    //object.position.z = -1200;
+
+
+function loadfirst(){
+    loader.load('./models/cave/cave01.3ds', function (object) {
+        //object.position.z = -1200;
+        
+        const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
+        let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
     
-    const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
-    let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
-
-    const geometries = [];
-    for (var i = 0; i < object.children.length; i++) {
-        geometries.push(object.children[i].geometry);
+        const geometries = [];
+        for (var i = 0; i < object.children.length; i++) {
+            geometries.push(object.children[i].geometry);
+        }
+    
+        const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
+    
+        var mesh = new THREE.Points(mergedGeo, material);
+    
+        object.scale.set(0.1,0.1,0.1);
+        mesh.position.z = 0;
+        object.position.set(-100,30,100);
+        //scene.add(mesh)
+        //scene.add(object);
+        parent.add(object);
+        mesh.visible = true;
+        object.visible = true;
+    /*
+        document.getElementById("PCtoggle").addEventListener("click", function () {
+            if (PCobjHidden) {
+                PCobjHidden = false;
+                // code to show object
+    
+                mesh.visible = true;
+            } else {
+                PCobjHidden = true;
+                // code to hide object
+    
+                mesh.visible = false;
+            }
+    
+    
+        });
+        document.getElementById("WFtoggle").addEventListener("click", function () {
+            if (WFobjHidden) {
+                WFobjHidden = false;
+                // code to show object
+    
+                linesMesh.visible = true;
+            } else {
+                WFobjHidden = true;
+                // code to hide object
+    
+                linesMesh.visible = false;
+            }
+    
+    
+        });
+        document.getElementById("SCtoggle").addEventListener("click", function () {
+            if (SCobjHidden) {
+                SCobjHidden = false;
+                // code to show object
+    
+                object.visible = true;
+            } else {
+                SCobjHidden = true;
+                // code to hide object
+    
+                object.visible = false;
+            }
+    
+    
+        });*/
     }
-
-    const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
-
-    var mesh = new THREE.Points(mergedGeo, material);
-
-    object.scale.set(0.1,0.1,0.1);
-    mesh.position.z = 0;
-    object.position.set(-100,30,100);
-    //scene.add(mesh)
-    //scene.add(object);
-    parent.add(object);
-    mesh.visible = true;
-    object.visible = true;
-/*
-    document.getElementById("PCtoggle").addEventListener("click", function () {
-        if (PCobjHidden) {
-            PCobjHidden = false;
-            // code to show object
-
-            mesh.visible = true;
-        } else {
-            PCobjHidden = true;
-            // code to hide object
-
-            mesh.visible = false;
-        }
-
-
-    });
-    document.getElementById("WFtoggle").addEventListener("click", function () {
-        if (WFobjHidden) {
-            WFobjHidden = false;
-            // code to show object
-
-            linesMesh.visible = true;
-        } else {
-            WFobjHidden = true;
-            // code to hide object
-
-            linesMesh.visible = false;
-        }
-
-
-    });
-    document.getElementById("SCtoggle").addEventListener("click", function () {
-        if (SCobjHidden) {
-            SCobjHidden = false;
-            // code to show object
-
-            object.visible = true;
-        } else {
-            SCobjHidden = true;
-            // code to hide object
-
-            object.visible = false;
-        }
-
-
-    });*/
+    );
+    
 }
-);
+
+function loadsecond(){
+    loader.load('./models/cave/cave02.3ds', function (object) {
+
+        const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
+        let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
+    
+        const geometries = [];
+        for (var i = 0; i < object.children.length; i++) {
+            geometries.push(object.children[i].geometry);
+        }
+    
+        const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
+    
+        var mesh = new THREE.Points(mergedGeo, material);
+    
+        object.scale.set(0.1,0.1,0.1);
+        mesh.position.z = 0;
+        object.position.set(-100,30,-100);
+        //scene.add(mesh)
+        //scene.add(object);
+        parent.add(object);
+        mesh.visible = false;
+        object.visible = true;
+    });
+}
+
+function loadthird(){
+    loader.load('./models/cave/cave00.3ds', function (object) {
+
+        const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
+        let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
+    
+        const geometries = [];
+        for (var i = 0; i < object.children.length; i++) {
+            geometries.push(object.children[i].geometry);
+        }
+    
+        const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
+    
+        var mesh = new THREE.Points(mergedGeo, material);
+    
+        object.scale.set(0.1,0.1,0.1);
+        mesh.position.z = 0;
+        object.position.set(100,30,-100);
+        object.rotation.set(90,0,90);
+        //scene.add(mesh)
+       //scene.add(object);
+        parent.add(object);
+        mesh.visible = false;
+        object.visible = true;
+    });
+}
+
+function loadfourth(){
+    loader.load('./models/cave/cave05.3ds', function (object) {
+
+        const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
+        let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
+    
+        const geometries = [];
+        for (var i = 0; i < object.children.length; i++) {
+            geometries.push(object.children[i].geometry);
+        }
+    
+        const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
+    
+        var mesh = new THREE.Points(mergedGeo, material);
+    
+        object.scale.set(0.1,0.1,0.1);
+        mesh.position.z = 0;
+        object.position.set(100,30,100);
+        //scene.add(mesh)
+        //scene.add(object);
+        parent.add(object);
+        mesh.visible = false;
+        object.visible = true;
+    });
+}
 
 
-
-loader.load('./models/cave/cave02.3ds', function (object) {
-
-    const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
-    let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
-
-    const geometries = [];
-    for (var i = 0; i < object.children.length; i++) {
-        geometries.push(object.children[i].geometry);
-    }
-
-    const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
-
-    var mesh = new THREE.Points(mergedGeo, material);
-
-    object.scale.set(0.1,0.1,0.1);
-    mesh.position.z = 0;
-    object.position.set(-100,30,-100);
-    //scene.add(mesh)
-    //scene.add(object);
-    parent.add(object);
-    mesh.visible = false;
-    object.visible = true;
-});
-
-loader.load('./models/cave/cave00.3ds', function (object) {
-
-    const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
-    let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
-
-    const geometries = [];
-    for (var i = 0; i < object.children.length; i++) {
-        geometries.push(object.children[i].geometry);
-    }
-
-    const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
-
-    var mesh = new THREE.Points(mergedGeo, material);
-
-    object.scale.set(0.1,0.1,0.1);
-    mesh.position.z = 0;
-    object.position.set(100,30,-100);
-    object.rotation.set(90,0,90);
-    //scene.add(mesh)
-   //scene.add(object);
-    parent.add(object);
-    mesh.visible = false;
-    object.visible = true;
-});
-loader.load('./models/cave/cave05.3ds', function (object) {
-
-    const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
-    let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
-
-    const geometries = [];
-    for (var i = 0; i < object.children.length; i++) {
-        geometries.push(object.children[i].geometry);
-    }
-
-    const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
-
-    var mesh = new THREE.Points(mergedGeo, material);
-
-    object.scale.set(0.1,0.1,0.1);
-    mesh.position.z = 0;
-    object.position.set(100,30,100);
-    //scene.add(mesh)
-    //scene.add(object);
-    parent.add(object);
-    mesh.visible = false;
-    object.visible = true;
-});
 /////////
 /////text
 /////////
