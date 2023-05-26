@@ -239,7 +239,7 @@ function loadsecond(){
 
         const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
         let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
-    
+    /*
         const geometries = [];
         for (var i = 0; i < object.children.length; i++) {
             geometries.push(object.children[i].geometry);
@@ -248,14 +248,14 @@ function loadsecond(){
         const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
     
         var mesh = new THREE.Points(mergedGeo, material);
-    
+    */
         object.scale.set(0.1,0.1,0.1);
-        mesh.position.z = 0;
+       // mesh.position.z = 0;
         object.position.set(-100,30,-100);
         //scene.add(mesh)
         //scene.add(object);
         parent.add(object);
-        mesh.visible = false;
+        //mesh.visible = false;
         object.visible = true;
     });
 }
@@ -292,7 +292,7 @@ function loadfourth(){
 
         const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
         let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
-    
+    /*
         const geometries = [];
         for (var i = 0; i < object.children.length; i++) {
             geometries.push(object.children[i].geometry);
@@ -301,14 +301,14 @@ function loadfourth(){
         const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
     
         var mesh = new THREE.Points(mergedGeo, material);
-    
+    */
         object.scale.set(0.1,0.1,0.1);
-        mesh.position.z = 0;
+       // mesh.position.z = 0;
         object.position.set(100,30,100);
         //scene.add(mesh)
         //scene.add(object);
         parent.add(object);
-        mesh.visible = false;
+       // mesh.visible = false;
         object.visible = true;
     });
 }
