@@ -4,7 +4,6 @@ import { TDSLoader } from 'three/addons/loaders/TDSLoader.js';
 import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 import { Scene, PerspectiveCamera } from 'three'
-import { ScrollControls } from 'three-story-controls'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 let camera, scene, renderer,raycaster;
@@ -82,7 +81,7 @@ controls.maxPolarAngle = Math.PI / 2;
 controls.target.set(0, 0, 0);
 
 scene.background = new THREE.Color(0xff0000);
-scene.fog = new THREE.Fog(0x00ff0d, 200, 500);
+scene.fog = new THREE.Fog(0xff0000, 200, 500);
 //scene.fog = new THREE.FogExp2( 0xcccccc, 1000 );
 const hemiLight = new THREE.HemisphereLight(0xa0a0a0, 0x444444, 1);
 hemiLight.position.set(0, 200, 0);
@@ -323,7 +322,7 @@ textloader.load('./src/fonts/helvetiker_regular.typeface.json', function (font) 
         side: THREE.DoubleSide
     });
 
-    const message = '   CAVES\nPareid';
+    const message = 'Buracos';
 
     const shapes = font.generateShapes(message, 40);
 
