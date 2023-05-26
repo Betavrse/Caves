@@ -6,7 +6,7 @@ import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 import { Scene, PerspectiveCamera } from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-let camera, scene, renderer,raycaster;
+let camera, scene, renderer, raycaster;
 let lightProbe;
 let dirLight;
 var scrollY = 0;
@@ -33,14 +33,14 @@ const sizes = {
 const newmaterial = new THREE.MeshPhysicalMaterial({
     reflectivity: 1,
     color: 0x131313,
-    roughness: 0.435,   
-    thickness:10,
+    roughness: 0.435,
+    thickness: 10,
     clearcoat: 0.72,
     clearcoatRoughness: 1
 
-    
-   
-  });
+
+
+});
 
 const aspect = window.innerWidth / window.innerHeight;
 var container = document.querySelector('.webgl');
@@ -58,22 +58,22 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 renderer.shadowMap.enabled = true;
 renderer.physicallyCorrectLights = true;
 renderer.colorSpace = THREE.SRGBColorSpace;
-renderer.toneMapping = THREE.ACESFilmicToneMapping ; 
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 3;
 
 
 camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 2000);
 //camera = new THREE.OrthographicCamera( frustumSize * aspect / - 2, frustumSize * aspect / 2, frustumSize / 2, frustumSize / - 2, 1, 1000 );
-camera.position.set( 0, 100, 300 );
+camera.position.set(0, 100, 300);
 //camera.LookAt(0,0,0);
 
-const axesHelper = new THREE.AxesHelper( 5 );
-scene.add( axesHelper );
-const controls = new OrbitControls( camera, renderer.domElement );
+const axesHelper = new THREE.AxesHelper(5);
+scene.add(axesHelper);
+const controls = new OrbitControls(camera, renderer.domElement);
 
 controls.enableDamping = true;
 controls.screenSpacePanning = false;
- // an animation loop is required when either damping or auto-rotation are enabled
+// an animation loop is required when either damping or auto-rotation are enabled
 controls.dampingFactor = 0.05;
 //controls.minDistance = 300;
 //controls.maxDistance = 500;
@@ -102,7 +102,7 @@ scene.add(dirLight);
 
 
 var parent = new THREE.Group();
-scene.add( parent );
+scene.add(parent);
 
 var maxHeight = (container.clientHeight || container.offsetHeight) - window.innerHeight
 
@@ -126,16 +126,14 @@ function initThree() {
 
     }
     container.appendChild(renderer.domElement);
-    document.addEventListener( 'mousemove', onPointerMove );
+    document.addEventListener('mousemove', onPointerMove);
 
-    loadfirst();
-    loadsecond();
 
 }
-function onPointerMove( event ) {
+function onPointerMove(event) {
 
-    pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-    pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+    pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
 
 }
 const loadingManager = new THREE.LoadingManager(() => {
@@ -149,40 +147,40 @@ const loadingManager = new THREE.LoadingManager(() => {
 });
 const size = 1000;
 const divisions = 20;
-const loader = new TDSLoader(loadingManager);
-loader.setResourcePath('./models/cave/');
-const gridHelper = new THREE.GridHelper( size, divisions );
-scene.add( gridHelper );
+
+const gridHelper = new THREE.GridHelper(size, divisions);
+scene.add(gridHelper);
 
 ////// 
 //model
 ///////
 
 
-function loadfirst(){
-    loader.load('./models/cave/cave01.3ds', function (object) {
-        //object.position.z = -1200;
-        
-        const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
-        let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
+const loader = new TDSLoader(loadingManager);
+loader.setResourcePath('./models/cave/');
+loader.load('./models/cave/cave01.3ds', function (object) {
+    //object.position.z = -1200;
+
+    const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
+    let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
     /*
         const geometries = [];
         for (var i = 0; i < object.children.length; i++) {
             geometries.push(object.children[i].geometry);
         }*/
-    
-        //const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
-    
-        //var mesh = new THREE.Points(mergedGeo, material);
-    
-        object.scale.set(0.1,0.1,0.1);
-       // mesh.position.z = 0;
-        object.position.set(-100,30,100);
-        //scene.add(mesh)
-        //scene.add(object);
-        parent.add(object);
-        //mesh.visible = true;
-        object.visible = true;
+
+    //const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
+
+    //var mesh = new THREE.Points(mergedGeo, material);
+
+    object.scale.set(0.1, 0.1, 0.1);
+    // mesh.position.z = 0;
+    object.position.set(-100, 30, 100);
+    //scene.add(mesh)
+    //scene.add(object);
+    parent.add(object);
+    //mesh.visible = true;
+    object.visible = true;
     /*
         document.getElementById("PCtoggle").addEventListener("click", function () {
             if (PCobjHidden) {
@@ -229,29 +227,29 @@ function loadfirst(){
     
     
         });*/
-    }
-    );
-    
 }
+);
 
-function loadsecond(){
+
+
+function loadsecond() {
     loader.load('./models/cave/cave02.3ds', function (object) {
 
         const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
         let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
-    /*
-        const geometries = [];
-        for (var i = 0; i < object.children.length; i++) {
-            geometries.push(object.children[i].geometry);
-        }
-    
-        const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
-    
-        var mesh = new THREE.Points(mergedGeo, material);
-    */
-        object.scale.set(0.1,0.1,0.1);
-       // mesh.position.z = 0;
-        object.position.set(-100,30,-100);
+        /*
+            const geometries = [];
+            for (var i = 0; i < object.children.length; i++) {
+                geometries.push(object.children[i].geometry);
+            }
+        
+            const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
+        
+            var mesh = new THREE.Points(mergedGeo, material);
+        */
+        object.scale.set(0.1, 0.1, 0.1);
+        // mesh.position.z = 0;
+        object.position.set(-100, 30, -100);
         //scene.add(mesh)
         //scene.add(object);
         parent.add(object);
@@ -260,55 +258,55 @@ function loadsecond(){
     });
 }
 
-function loadthird(){
+function loadthird() {
     loader.load('./models/cave/cave00.3ds', function (object) {
 
         const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
         let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
-    /*
-        const geometries = [];
-        for (var i = 0; i < object.children.length; i++) {
-            geometries.push(object.children[i].geometry);
-        }
-    
-        const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
-    
-        var mesh = new THREE.Points(mergedGeo, material);
-    */
-        object.scale.set(0.1,0.1,0.1);
+        /*
+            const geometries = [];
+            for (var i = 0; i < object.children.length; i++) {
+                geometries.push(object.children[i].geometry);
+            }
+        
+            const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
+        
+            var mesh = new THREE.Points(mergedGeo, material);
+        */
+        object.scale.set(0.1, 0.1, 0.1);
         //mesh.position.z = 0;
-        object.position.set(100,30,-100);
-        object.rotation.set(90,0,90);
+        object.position.set(100, 30, -100);
+        object.rotation.set(90, 0, 90);
         //scene.add(mesh)
-       //scene.add(object);
+        //scene.add(object);
         parent.add(object);
         //mesh.visible = false;
         object.visible = true;
     });
 }
 
-function loadfourth(){
+function loadfourth() {
     loader.load('./models/cave/cave05.3ds', function (object) {
 
         const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
         let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
-    /*
-        const geometries = [];
-        for (var i = 0; i < object.children.length; i++) {
-            geometries.push(object.children[i].geometry);
-        }
-    
-        const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
-    
-        var mesh = new THREE.Points(mergedGeo, material);
-    */
-        object.scale.set(0.1,0.1,0.1);
-       // mesh.position.z = 0;
-        object.position.set(100,30,100);
+        /*
+            const geometries = [];
+            for (var i = 0; i < object.children.length; i++) {
+                geometries.push(object.children[i].geometry);
+            }
+        
+            const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
+        
+            var mesh = new THREE.Points(mergedGeo, material);
+        */
+        object.scale.set(0.1, 0.1, 0.1);
+        // mesh.position.z = 0;
+        object.position.set(100, 30, 100);
         //scene.add(mesh)
         //scene.add(object);
         parent.add(object);
-       // mesh.visible = false;
+        // mesh.visible = false;
         object.visible = true;
     });
 }
@@ -440,8 +438,7 @@ function init() {
     animate()
 }
 
-window.addEventListener('resize', () =>
-{
+window.addEventListener('resize', () => {
     // Update sizes
     sizes.width = window.innerWidth
     sizes.height = window.innerHeight
@@ -466,32 +463,32 @@ function animate() {
 
 function render() {
     //var dtime = Date.now() - startTime;
-	var time = Date.now() * 0.0005;
-    parent.rotation.y+=0.0004;
-    raycaster.setFromCamera( pointer, camera );
-    const intersects = raycaster.intersectObjects( scene.children, false );
-    if ( intersects.length > 0 ) {
+    var time = Date.now() * 0.0005;
+    parent.rotation.y += 0.0004;
+    raycaster.setFromCamera(pointer, camera);
+    const intersects = raycaster.intersectObjects(scene.children, false);
+    if (intersects.length > 0) {
 
-        if ( INTERSECTED != intersects[ 0 ].object ) {
+        if (INTERSECTED != intersects[0].object) {
 
-            if ( INTERSECTED ) INTERSECTED.material;
+            if (INTERSECTED) INTERSECTED.material;
 
-            INTERSECTED = intersects[ 0 ].object;
-            
+            INTERSECTED = intersects[0].object;
+
             INTERSECTED.material = newmaterial;
 
         }
 
     } else {
 
-        if ( INTERSECTED ) INTERSECTED.material;
+        if (INTERSECTED) INTERSECTED.material;
 
         INTERSECTED = null;
 
     }
 
     renderer.render(scene, camera);
-    
+
 }
 
 function onWheel(e) {
