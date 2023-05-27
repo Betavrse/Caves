@@ -177,7 +177,7 @@ loader.load('./models/cave/cave01.3ds', function (object) {
     // mesh.position.z = 0;
     object.position.set(-100, 30, 100);
     //scene.add(mesh)
-    //scene.add(object);
+    scene.add(object);
     parent.add(object);
     //mesh.visible = true;
     object.visible = true;
