@@ -157,8 +157,7 @@ scene.add(gridHelper);
 
 
 const loader = new TDSLoader(loadingManager);
-loader.setResourcePath('./models/cave/');
-loader.load('./models/cave/cave01.3ds', function (object) {
+loader.load('https://storage.googleapis.com/fluidplate.com/Buracos/cave01.3ds', function (object) {
     //object.position.z = -1200;
 
     const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
@@ -181,6 +180,10 @@ loader.load('./models/cave/cave01.3ds', function (object) {
     parent.add(object);
     //mesh.visible = true;
     object.visible = true;
+
+
+    const axesHelper = new THREE.AxesHelper(100);
+    object.add(axesHelper);
     /*
         document.getElementById("PCtoggle").addEventListener("click", function () {
             if (PCobjHidden) {
@@ -232,84 +235,90 @@ loader.load('./models/cave/cave01.3ds', function (object) {
 
 
 
-function loadsecond() {
-    loader.load('./models/cave/cave02.3ds', function (object) {
 
-        const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
-        let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
-        /*
-            const geometries = [];
-            for (var i = 0; i < object.children.length; i++) {
-                geometries.push(object.children[i].geometry);
-            }
-        
-            const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
-        
-            var mesh = new THREE.Points(mergedGeo, material);
-        */
-        object.scale.set(0.1, 0.1, 0.1);
-        // mesh.position.z = 0;
-        object.position.set(-100, 30, -100);
-        //scene.add(mesh)
-        //scene.add(object);
-        parent.add(object);
-        //mesh.visible = false;
-        object.visible = true;
-    });
-}
+loader.load('https://storage.googleapis.com/fluidplate.com/Buracos/cave01.3ds', function (object) {
 
-function loadthird() {
-    loader.load('./models/cave/cave00.3ds', function (object) {
+    const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
+    let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
+    /*
+        const geometries = [];
+        for (var i = 0; i < object.children.length; i++) {
+            geometries.push(object.children[i].geometry);
+        }
+    
+        const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
+    
+        var mesh = new THREE.Points(mergedGeo, material);
+    */
+    object.scale.set(0.1, 0.1, 0.1);
+    // mesh.position.z = 0;
+    object.position.set(-100, 30, -100);
+    //scene.add(mesh)
+    //scene.add(object);
+    parent.add(object);
+    //mesh.visible = false;
+    object.visible = true;
+    const axesHelper = new THREE.AxesHelper(100);
+    object.add(axesHelper);
+});
 
-        const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
-        let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
-        /*
-            const geometries = [];
-            for (var i = 0; i < object.children.length; i++) {
-                geometries.push(object.children[i].geometry);
-            }
-        
-            const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
-        
-            var mesh = new THREE.Points(mergedGeo, material);
-        */
-        object.scale.set(0.1, 0.1, 0.1);
-        //mesh.position.z = 0;
-        object.position.set(100, 30, -100);
-        object.rotation.set(90, 0, 90);
-        //scene.add(mesh)
-        //scene.add(object);
-        parent.add(object);
-        //mesh.visible = false;
-        object.visible = true;
-    });
-}
 
-function loadfourth() {
-    loader.load('./models/cave/cave05.3ds', function (object) {
 
-        const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
-        let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
-        /*
-            const geometries = [];
-            for (var i = 0; i < object.children.length; i++) {
-                geometries.push(object.children[i].geometry);
-            }
-        
-            const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
-        
-            var mesh = new THREE.Points(mergedGeo, material);
-        */
-        object.scale.set(0.1, 0.1, 0.1);
-        // mesh.position.z = 0;
-        object.position.set(100, 30, 100);
-        //scene.add(mesh)
-        //scene.add(object);
-        parent.add(object);
-        // mesh.visible = false;
-        object.visible = true;
-    });
-}
+loader.load('https://storage.googleapis.com/fluidplate.com/Buracos/cave00.3ds', function (object) {
+
+    const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
+    let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
+    /*
+        const geometries = [];
+        for (var i = 0; i < object.children.length; i++) {
+            geometries.push(object.children[i].geometry);
+        }
+    
+        const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
+    
+        var mesh = new THREE.Points(mergedGeo, material);
+    */
+    object.scale.set(0.1, 0.1, 0.1);
+    //mesh.position.z = 0;
+    object.position.set(100, 30, -100);
+    object.rotation.set(-120, -30, -90);
+    //scene.add(mesh)
+    //scene.add(object);
+    parent.add(object);
+    //mesh.visible = false;
+    object.visible = true;
+    const axesHelper = new THREE.AxesHelper(100);
+    object.add(axesHelper);
+});
+
+
+
+loader.load('https://storage.googleapis.com/fluidplate.com/Buracos/cave05.3ds', function (object) {
+
+    const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
+    let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
+    /*
+        const geometries = [];
+        for (var i = 0; i < object.children.length; i++) {
+            geometries.push(object.children[i].geometry);
+        }
+    
+        const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
+    
+        var mesh = new THREE.Points(mergedGeo, material);
+    */
+    object.scale.set(0.1, 0.1, 0.1);
+    // mesh.position.z = 0;
+    object.position.set(100, 30, 100);
+    //scene.add(mesh)
+    //scene.add(object);
+    parent.add(object);
+    // mesh.visible = false;
+    object.visible = true;
+    const axesHelper = new THREE.AxesHelper(100);
+    object.add(axesHelper);
+});
+
 
 
 /////////
