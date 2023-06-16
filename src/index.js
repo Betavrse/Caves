@@ -80,8 +80,8 @@ controls.dampingFactor = 0.05;
 controls.maxPolarAngle = Math.PI / 2;
 controls.target.set(0, 0, 0);
 
-scene.background = new THREE.Color(0xff0000);
-scene.fog = new THREE.Fog(0xff0000, 200, 500);
+scene.background = new THREE.Color(0x000000);
+scene.fog = new THREE.Fog(0x000000, 200, 500);
 //scene.fog = new THREE.FogExp2( 0xcccccc, 1000 );
 const hemiLight = new THREE.HemisphereLight(0xa0a0a0, 0x444444, 1);
 hemiLight.position.set(0, 200, 0);
@@ -324,7 +324,7 @@ loader.load('https://storage.googleapis.com/fluidplate.com/Buracos/cave05.3ds', 
 /////////
 /////text
 /////////
-
+/*
 const textloader = new FontLoader();
 textloader.load('./src/fonts/helvetiker_regular.typeface.json', function (font) {
 
@@ -403,7 +403,9 @@ textloader.load('./src/fonts/helvetiker_regular.typeface.json', function (font) 
 
 
 
-}); //end load function
+});
+*/
+//end load function
 
 
 
