@@ -59,7 +59,7 @@ renderer.shadowMap.enabled = true;
 renderer.physicallyCorrectLights = true;
 renderer.colorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 3;
+renderer.toneMappingExposure = 5;
 
 
 camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 2000);
@@ -75,13 +75,14 @@ controls.enableDamping = true;
 controls.screenSpacePanning = false;
 // an animation loop is required when either damping or auto-rotation are enabled
 controls.dampingFactor = 0.05;
-//controls.minDistance = 300;
-//controls.maxDistance = 500;
+controls.minDistance = 200;
+controls.maxDistance = 500;
 controls.maxPolarAngle = Math.PI / 2;
 controls.target.set(0, 0, 0);
+controls.enablePan = false;
 
 scene.background = new THREE.Color(0x000000);
-scene.fog = new THREE.Fog(0x000000, 200, 500);
+scene.fog = new THREE.Fog(0x444444, 200, 500);
 //scene.fog = new THREE.FogExp2( 0xcccccc, 1000 );
 const hemiLight = new THREE.HemisphereLight(0xa0a0a0, 0x444444, 1);
 hemiLight.position.set(0, 200, 0);
@@ -157,7 +158,7 @@ scene.add(gridHelper);
 
 
 const loader = new TDSLoader(loadingManager);
-loader.load('https://storage.googleapis.com/fluidplate.com/Buracos/cave01.3ds', function (object) {
+loader.load('https://storage.googleapis.com/fluidplate.com/Buracos/cave00.3ds', function (object) {
     //object.position.z = -1200;
 
     const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
@@ -182,8 +183,6 @@ loader.load('https://storage.googleapis.com/fluidplate.com/Buracos/cave01.3ds', 
     object.visible = true;
 
 
-    const axesHelper = new THREE.AxesHelper(100);
-    object.add(axesHelper);
     /*
         document.getElementById("PCtoggle").addEventListener("click", function () {
             if (PCobjHidden) {
@@ -233,9 +232,6 @@ loader.load('https://storage.googleapis.com/fluidplate.com/Buracos/cave01.3ds', 
 }
 );
 
-
-
-
 loader.load('https://storage.googleapis.com/fluidplate.com/Buracos/cave01.3ds', function (object) {
 
     const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
@@ -258,13 +254,10 @@ loader.load('https://storage.googleapis.com/fluidplate.com/Buracos/cave01.3ds', 
     parent.add(object);
     //mesh.visible = false;
     object.visible = true;
-    const axesHelper = new THREE.AxesHelper(100);
-    object.add(axesHelper);
+
 });
 
-
-
-loader.load('https://storage.googleapis.com/fluidplate.com/Buracos/cave00.3ds', function (object) {
+loader.load('https://storage.googleapis.com/fluidplate.com/Buracos/cave02.3ds', function (object) {
 
     const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
     let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
@@ -287,11 +280,33 @@ loader.load('https://storage.googleapis.com/fluidplate.com/Buracos/cave00.3ds', 
     parent.add(object);
     //mesh.visible = false;
     object.visible = true;
-    const axesHelper = new THREE.AxesHelper(100);
-    object.add(axesHelper);
+
 });
 
+loader.load('https://storage.googleapis.com/fluidplate.com/Buracos/cave04.3ds', function (object) {
 
+    const sprite = new THREE.TextureLoader().load('./src/textures/sprites/circle.png');
+    let material = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: false });
+    /*
+        const geometries = [];
+        for (var i = 0; i < object.children.length; i++) {
+            geometries.push(object.children[i].geometry);
+        }
+    
+        const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geometries);
+    
+        var mesh = new THREE.Points(mergedGeo, material);
+    */
+    object.scale.set(0.1, 0.1, 0.1);
+    // mesh.position.z = 0;
+    object.position.set(100, 30, 100);
+    //scene.add(mesh)
+    //scene.add(object);
+    parent.add(object);
+    // mesh.visible = false;
+    object.visible = true;
+
+});
 
 loader.load('https://storage.googleapis.com/fluidplate.com/Buracos/cave05.3ds', function (object) {
 
@@ -315,8 +330,7 @@ loader.load('https://storage.googleapis.com/fluidplate.com/Buracos/cave05.3ds', 
     parent.add(object);
     // mesh.visible = false;
     object.visible = true;
-    const axesHelper = new THREE.AxesHelper(100);
-    object.add(axesHelper);
+
 });
 
 
@@ -413,7 +427,7 @@ textloader.load('./src/fonts/helvetiker_regular.typeface.json', function (font) 
  * Particles
  */
 // Geometry
-/*
+
 const particlesCount = 60000
 const positions = new Float32Array(particlesCount * 3)
 
@@ -434,7 +448,7 @@ const particlesMaterial = new THREE.PointsMaterial({
 })
 // Points
 const particles = new THREE.Points(particlesGeometry, particlesMaterial)
-scene.add(particles)*/
+scene.add(particles)
 
 function lerp(a, b, t) {
     return ((1 - t) * a + t * b);
@@ -486,7 +500,7 @@ function render() {
 
             INTERSECTED = intersects[0].object;
 
-            INTERSECTED.material = newmaterial;
+            //INTERSECTED.material = newmaterial;
 
         }
 
