@@ -44,7 +44,7 @@ html, body {
   padding: 0 50px;
   border-style: solid;
   border-width: thin;
-  border-color: #2e2e2e;
+  border-color: #3e3e3e;
   border-radius: 10px;
 
 }
@@ -64,6 +64,8 @@ html, body {
   font-size: 2rem;
 
 }
+
+
 
 .fa-gem{
   margin-right:0.5rem;
@@ -87,7 +89,12 @@ html, body {
   padding: 0 1rem;
   height:100%;
   width:40%;
-  font-size: 3vmin;
+  font-size: 2vmin;
+}
+
+.navbar__links:hover{
+
+  color: #ff00d4;
 }
 
 .navbar__btn{
@@ -104,6 +111,11 @@ html, body {
   border-radius: 5px;
   background: #1b1b1b;
   color:#fff;
+}
+
+.navbar__btn:hover{
+  background: #F6F9FE;
+  color: #174ea6;
 }
 
   /* CSS */
@@ -187,13 +199,20 @@ html, body {
     bottom: 0;
 	width: 100%;
 	height: 100%;
-	
-  transition: 1s opacity;
+ 
+  justify-content: center;
+  align-items: center;
+  transition: 2s opacity;
   backdrop-filter: blur(4px);
+  border-style: solid;
+  border-width: thin;
+  border-color: #878787;
+  border-radius: 10px;
 }
 
 #loading-screen.fade-out {
-    opacity: 0;
+  transition: 3s opacity;
+  opacity: 0;
 }
 
 #loader {
@@ -287,18 +306,21 @@ html, body {
       backdrop-filter: blur(10px);
       border-style: solid;
       border-width: thin;
+      border-color: #3e3e3e;
+      border-radius: 10px;
   }
 
   .navbar__menu.active{
       backdrop-filter: blur(10px);
-      top:100%;
+      top:110%;
+      width:50%;
       opacity: 1;
       transition: all 0.5s ease;
       z-index:99;
       height: 25vh;
       font-size: 1.6rem;
-      border-style: solid;
-      border-width: thin;
+
+
   }
 
   #navbar__logo{
@@ -311,10 +333,18 @@ html, body {
       margin:5px auto;
       transition: all 0.3 ease-in-out;
       background: #fff;
+      
   }
 
   .navbar__item{
       width:100%;
+      height:10%;
+      padding:2rem;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      
   }
 
   .navbar__links{
@@ -324,13 +354,18 @@ html, body {
       display: table;
       border-style: solid;
       border-width: thin;
+      backdrop-filter: blur(10px);
+      border-color: #3e3e3e;
+      border-radius: 10px;
+      
   }
 
   #mobile-menu{
       position: absolute;
-      top:20%;
+      top:25%;
       right:5%;
       transform: translate(5%,20%);
+      
   }
 
   .navbar__btn{
@@ -340,6 +375,18 @@ html, body {
       display: table;
       border-style: solid;
       border-width: thin;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+ 
+  }
+  .navbar__btn:hover{
+    color: #ff00d4;
+
   }
 
   .button {
@@ -360,11 +407,12 @@ html, body {
 
   #mobile-menu.is-active .bar:nth-child(2){
       opacity: 0;
+      transition: 1s opacity;
   }
   #mobile-menu.is-active .bar:nth-child(1){
       transform: translateY(8px) rotate(45deg);
   }
   #mobile-menu.is-active .bar:nth-child(3){
-      transform: translateY(-px) rotate(-45deg);
+      transform: translateY(-8px) rotate(-45deg);
   }
 }
